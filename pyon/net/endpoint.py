@@ -95,7 +95,7 @@ class EndpointFactory(object):
         pass
 
 class BinderListener(object):
-    def __init__(self, node, name, endpoint_factory, listening_channel_type, spawn_callable):
+    def __init__(self, node, name, endpoint_factory, listening_channel_type=None, spawn_callable=None):
         """
         @param spawn_callable   A callable to spawn a new received message worker thread. Calls with
                                 the callable to be spawned and args. If None specified, does not create

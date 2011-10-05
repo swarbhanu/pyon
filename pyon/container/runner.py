@@ -23,6 +23,8 @@ import logging
 
 from pyon import __version__ as version
 from pyon.util.log import log
+from pyon.util.config import Config
+from pyon.util.misc import load_value_from_file
 
 
 class Logger(object):
@@ -128,9 +130,17 @@ class Runner(object):
         service making mechanism to load service (service may be specified
         by name and config block)
 
-        Not sure if you'd want to extend this to add more ways to read an
-        app file.
+        This is where you would hook in the mechanism that reads app or rel
+        files. I'm not sure you should still use app and rel files, as
+        those are literally copied from Erlang. Consider starting over with
+        something simpler, that can leverage existing pythonic things (but
+        not be too python specific...well, app and rel files are actually 
+        Erlang specific...so, to make life easier, you could start from 
+        something that is at least Pyton specific, and generalize from 
+        there). 
         """
+        if self.config['app_file']:
+            return load_value_from_file(self.config['app_file'], 'application')
 
 class Options(object):
     """
@@ -143,6 +153,7 @@ class Options(object):
     def __init__(self):
         self._init_parser()
         self.opts = {}
+        self.app_file = None
 
     def _init_parser(self):
         self.parser = argparse.ArgumentParser(description=self.description)
@@ -160,10 +171,12 @@ class Options(object):
 
     def parse_options(self):
         opts, extra = self.parser.parse_known_args()
+        print opts, extra
+        self.opts = vars(opts)
         if extra:
+            print 'fddfdf'
             self.parse_args(*extra)
 
-        self.opts = vars(opts)
         self.post_options()
 
     def post_options(self):
@@ -172,15 +185,25 @@ class Options(object):
 
         Implement this to do something specific in a subclass.
         """
+        if self.opts['pyon_config']:
+            self.read_config()
 
     def parse_args(self, *args):
         """
         Implement specific extra arg handling
         """
+        print args
+        if args:
+            self.app_file = args[0]
+            print self.app_file
+            self.opts['app_file'] = self.app_file
+            print self.opts
 
     def read_config(self):
         cfg = Config([self.opts['pyon_config']]).data
+        print cfg
         self.opts.update(cfg)
+        print self.opts
         
 
 

@@ -2,7 +2,7 @@
 import yaml
 
 from pyon.container import runner
-from pyon.container import cc
+from pyon.container import container
 
 class ContainerOptions(runner.Options):
     """
@@ -12,8 +12,16 @@ class ContainerOptions(runner.Options):
         self.parser.add_argument('-d', '--daemon', action='store_true', help="Daemonize")
         self.parser.add_argument('--pidfile', default='pyond.pid', help="Name of pidfile")
         # broker options? Exchange space name? list spaces option?
+        # It would be better to have an exchange space config file
+        # installed in the system. This would allow the user/dev to specify
+        # pre configured (authoritative or local) exchange spaces. So, an
+        # exchange space name maps to a broker connection configuration.
+        self.parser.add_argument('--broker_host', default='localhost')
+        self.parser.add_argument('--broker_port', type=int, default=5672)
+        self.parser.add_argument('--broker_vhost', default='/')
 
-    def parse_args(self, tokens):
+
+    def Xparse_args(self, tokens):
         # Exploit yaml's spectacular type inference (and ensure consistency with config files)
         args, kwargs = [], {}
         for token in tokens:
@@ -38,7 +46,10 @@ class ContainerApplicationRunner(runner.Runner):
 
     def post_application(self):
         #self.start_application(self.application)
-        container = cc.Container()
+        cont_root = container.Container(self.config)
+        self.application.set_parent(cont_root)
+        self.cont_root = cont_root
+        self.cont_root.start()
 
     def start_application(self, application):
         """
