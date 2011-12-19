@@ -21,8 +21,8 @@ dataString = f.read()
 f.close()
 
 # Connecting to the server and sending the hdf file as a binary string
-from interface.services.examples.hello.iHDFhello_service import HDFHelloServiceClient
-hsc=HDFHelloServiceClient(node=cc.node)   # specifies the broker to connect to as cc.node
+from interface.services.examples.hello.ihello_service import HelloServiceClient
+hsc=HelloServiceClient(node=cc.node, name='hdf_hello')   # specifies the broker to connect to as cc.node
 									   # cc is the container that automatically start when
 									   # pycc is started.
 dataString_fromServer = hsc.hello(dataString) # where dataString is some string
