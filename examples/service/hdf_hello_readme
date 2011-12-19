@@ -1,0 +1,41 @@
+This README file describes how to run the HDF Messaging example. The HDF Messaging example revolves
+around the following files that have been added to pyon.
+
+
+https://github.com/swarbhanu/pyon/blob/hdf_messaging/examples/service/hello_scripts/hdf_hello_client_script.py
+https://github.com/swarbhanu/pyon/blob/hdf_messaging/examples/service/hdf_hello.py
+https://github.com/swarbhanu/ion-definitions/blob/hdf_messaging/res/deploy/examples/hdf_hello.yml
+https://github.com/swarbhanu/pyon/blob/hdf_messaging/interface/services/examples/hello/iHDFhello_service.py
+
+Here are the instructions:
+
+To run the code:
+First on one terminal in the pyon directory (which will play the role of server):
+bin/pycc --rel=res/deploy/examples/hdf_hello.yml
+
+Then on another terminal in the pyon directory:
+bin/pycc
+Then inside the interactive shell do,
+%loadpy loadpy examples/service/hello_scripts/hdf_hello_client_script.py
+
+#################################################################################
+
+How do we know that the code runs?
+
+#################################################################################
+
+Running the code results in messages passed and you can see the activity in the two shells.
+
+Also, in the pyon directory, you will find three hdf files that were written and saved into as
+a byproduct.
+
+The hdf file, myfile_check.hdf5, is the file that is created and send by the client shell.
+
+myfile_check_server.hdf5 is the file that is opened by the server shell as a temporary file.
+Data is appended to this file by the server and then the file is sent back to the client as
+a binary string.
+
+After the client receives the binary string from the server, it writes it into
+myfile_check_out.hdf5.
+
+All these files can be found in the pyon directory.

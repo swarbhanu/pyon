@@ -30,7 +30,7 @@ res/config/logging.local.yml
 logs
 res/config/*~*
 scripts/*~*
-unittest.out
 interface/*
+unittest.out
 cc-pid*
 .coverage
